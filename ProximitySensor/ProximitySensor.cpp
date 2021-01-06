@@ -37,8 +37,6 @@ void PKNNOperations()
 	std::chrono::steady_clock::time_point start;
 	std::chrono::steady_clock::time_point end;
 
-	start = std::chrono::steady_clock::now();
-
 	vector<int> regionFrom, regionTo;
 	regionFrom.push_back(0);
 	regionFrom.push_back(0);
@@ -53,8 +51,13 @@ void PKNNOperations()
 	Range* range = new Range(2, rangeFrom, rangeTo);
 
 	Range* region = new Range(2, regionFrom, regionTo);
+	start = std::chrono::steady_clock::now();
 	PKNN* pKNN = new PKNN(2, 2, *points, region, range, 4);
 	pKNN->BuildKNNs();
+	end = std::chrono::steady_clock::now();
+	cout << "Time to build the Parallel KNNs is " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << " microseconds." << endl;
+
+	start = std::chrono::steady_clock::now();
 	pKNN->BuildKdTrees();
 	end = std::chrono::steady_clock::now();
 	cout << "Time to build the Parallel KdTrees is " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << " microseconds." << endl;
