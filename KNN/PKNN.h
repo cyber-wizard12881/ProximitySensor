@@ -2,6 +2,7 @@
 #include "KNN.h"
 #include <ppl.h>
 #include <concurrent_vector.h>
+#include "KNNP.h"
 
 #ifdef KNN_EXPORTS
 #  define KNN_API __declspec(dllexport)
@@ -34,4 +35,15 @@ public:
 	Range* range;
 	concurrent_vector<Node*> pNodes;
 	concurrent_vector<Point*> pNearestOnes;
+
+	void SetKNNPPoints(concurrent_vector<Point*> points);
+	void BuildKNNPs();
+	void BuildPKdTrees();
+	void KNNPSearch();
+	void KNNPPoints(Node* root, concurrent_vector<Point*>* points);
+	void RemoveKNNPDuplicatePoints();
+	concurrent_vector<KNNP*> knnps;
+	concurrent_vector<Point*> knnpPoints;
+	concurrent_vector<Node*> knnpNodes;
+	concurrent_vector<Point*> knnpNearestOnes;
 };

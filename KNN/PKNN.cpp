@@ -26,6 +26,21 @@ PKNN::~PKNN()
 	this->points.shrink_to_fit();
 	this->knns.clear();
 	this->knns.shrink_to_fit();
+
+	this->knnpPoints.clear();
+	this->knnpPoints.shrink_to_fit();
+	this->knnps.clear();
+	this->knnps.shrink_to_fit();
+
+	this->knnpNodes.clear();
+	this->knnpNodes.shrink_to_fit();
+	this->pNodes.clear();
+	this->pNodes.shrink_to_fit();
+
+	this->knnpNearestOnes.clear();
+	this->knnpNearestOnes.shrink_to_fit();
+	this->pNearestOnes.clear();
+	this->pNearestOnes.shrink_to_fit();
 }
 
 void PKNN::BuildKNNs()
@@ -36,11 +51,34 @@ void PKNN::BuildKNNs()
 		});
 }
 
+void PKNN::SetKNNPPoints(concurrent_vector<Point*> points)
+{
+	this->knnpPoints = points;
+	this->P = points.size();
+	this->PP = this->P / this->N;
+}
+
+void PKNN::BuildKNNPs()
+{
+	parallel_for(size_t(0), size_t(N), [&](size_t idx) {
+		concurrent_vector<Point*> pointsBlock(&this->knnpPoints[idx], &this->knnpPoints[idx] + this->PP);
+		this->knnps.push_back(new KNNP(this->K, this->NN, pointsBlock));
+		});
+}
+
 void PKNN::BuildKdTrees()
 {
 	parallel_for(size_t(0), size_t(N), [&](size_t idx) {
 		this->knns[idx]->KDTree->SetRegion(this->region);
 		this->knns[idx]->BuildKdTree();
+		});
+}
+
+void PKNN::BuildPKdTrees()
+{
+	parallel_for(size_t(0), size_t(N), [&](size_t idx) {
+		this->knnps[idx]->KDTree->SetRegion(this->region);
+		this->knnps[idx]->BuildPKdTree();
 		});
 }
 
@@ -84,6 +122,16 @@ void PKNN::PSearch()
 		});
 }
 
+void PKNN::KNNPSearch()
+{
+	parallel_for(size_t(0), size_t(N), [&](size_t idx) {
+		knnps[idx]->Search(this->knnps[idx]->KDTree->root, this->range, &this->knnpNodes);
+		for (int idx = 0; idx < this->knnpNodes.size(); idx++) {
+			this->KNNPPoints(knnpNodes[idx], &this->knnpNearestOnes);
+		}
+		});
+}
+
 void PKNN::Points(Node* root, concurrent_vector<Point*>* points)
 {
 	if (root == NULL)
@@ -96,8 +144,26 @@ void PKNN::Points(Node* root, concurrent_vector<Point*>* points)
 		Points(root->boundingBox->right, points);
 }
 
+void PKNN::KNNPPoints(Node* root, concurrent_vector<Point*>* points)
+{
+	if (root == NULL)
+		return;
+	if (root->boundingBox != NULL)
+		KNNPPoints(root->boundingBox->left, points);
+	if (root->point != NULL)
+		points->push_back(root->point);
+	if (root->boundingBox != NULL)
+		KNNPPoints(root->boundingBox->right, points);
+}
+
 void PKNN::RemoveDuplicatePoints()
 {
 	set<Point*> uniquePoints(this->pNearestOnes.begin(), this->pNearestOnes.end());
 	this->pNearestOnes.assign(uniquePoints.begin(), uniquePoints.end());
+}
+
+void PKNN::RemoveKNNPDuplicatePoints()
+{
+	set<Point*> uniquePoints(this->knnpNearestOnes.begin(), this->knnpNearestOnes.end());
+	this->knnpNearestOnes.assign(uniquePoints.begin(), uniquePoints.end());
 }

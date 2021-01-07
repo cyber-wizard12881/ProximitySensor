@@ -12,12 +12,77 @@ using namespace std;
 
 void KNNOperations();
 void PKNNOperations();
+void PKNNPOperations();
 
 int main()
 {
 	KNNOperations();
 	PKNNOperations();
+	PKNNPOperations();
 	return getchar();
+}
+
+void PKNNPOperations()
+{
+	cout << "-------Starting the Parallel KNNP Range Search Program------------" << endl;
+	Node* root = NULL;
+	PKdTree* kdTree = new PKdTree(2);
+	vector<Point*>* points = new vector<Point*>();
+	concurrent_vector<Point*>* knnpPoints = new concurrent_vector<Point*>();
+	knnpPoints->push_back(new Point(2, 3, 6));
+	knnpPoints->push_back(new Point(2, 17, 15));
+	knnpPoints->push_back(new Point(2, 13, 15));
+	knnpPoints->push_back(new Point(2, 6, 12));
+	knnpPoints->push_back(new Point(2, 9, 1));
+	knnpPoints->push_back(new Point(2, 2, 7));
+	knnpPoints->push_back(new Point(2, 10, 19));
+
+	std::chrono::steady_clock::time_point start;
+	std::chrono::steady_clock::time_point end;
+
+	vector<int> regionFrom, regionTo;
+	regionFrom.push_back(0);
+	regionFrom.push_back(0);
+	regionTo.push_back(21);
+	regionTo.push_back(21);
+
+	vector<int> rangeFrom, rangeTo;
+	rangeFrom.push_back(10);
+	rangeFrom.push_back(13);
+	rangeTo.push_back(18);
+	rangeTo.push_back(16);
+	Range* range = new Range(2, rangeFrom, rangeTo);
+
+	Range* region = new Range(2, regionFrom, regionTo);
+	start = std::chrono::steady_clock::now();
+	PKNN* pKNN = new PKNN(2, 2, *points, region, range, 4);
+	pKNN->SetKNNPPoints(*knnpPoints);
+	end = std::chrono::steady_clock::now();
+	cout << "Time to Set the KNNPPoints is " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << " microseconds." << endl;
+
+	start = std::chrono::steady_clock::now();
+	pKNN->BuildKNNPs();
+	end = std::chrono::steady_clock::now();
+	cout << "Time to build the Parallel KNNPs is " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << " microseconds." << endl;
+
+	start = std::chrono::steady_clock::now();
+	pKNN->BuildPKdTrees();
+	end = std::chrono::steady_clock::now();
+	cout << "Time to build the Parallel PKdTrees is " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << " microseconds." << endl;
+
+	start = std::chrono::steady_clock::now();
+	pKNN->KNNPSearch();
+	pKNN->RemoveKNNPDuplicatePoints();
+	end = std::chrono::steady_clock::now();
+	cout << "Time to search the Range using Parallel KNNP (KdTree) is " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << " microseconds." << endl;
+
+	cout << "-------Printing Results of the Parallel KNNP Range Search------------" << endl;
+	range->Plot();
+	cout << "Points in the Range are: " << endl;
+	for (int idx = 0; idx < pKNN->knnpNearestOnes.size(); idx++) {
+		pKNN->knnpNearestOnes[idx]->Plot();
+	}
+	cout << "-------Ending the Parallel KNNP Range Search Program------------" << endl;
 }
 
 void PKNNOperations()
