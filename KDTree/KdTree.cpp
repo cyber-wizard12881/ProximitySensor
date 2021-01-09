@@ -2,6 +2,7 @@
 #include "KdTree.h"
 #include "Sorter.h"
 
+//Default Constructor for the Serial KD Tree
 KdTree::KdTree()
 {
 	this->K = 0;
@@ -12,6 +13,7 @@ KdTree::KdTree()
 	this->minNode = NULL;
 }
 
+//Constructor for the K Dimensions of the KD Tree
 KdTree::KdTree(int K)
 {
 	this->K = K;
@@ -22,6 +24,7 @@ KdTree::KdTree(int K)
 	this->minNode = NULL;
 }
 
+//The Serial KD Tree Destructor
 KdTree::~KdTree()
 {
 	this->K = 0;
@@ -35,6 +38,7 @@ KdTree::~KdTree()
 	this->minNode = NULL;
 }
 
+//Inserting a Node into the Serial KD Tree
 Node* KdTree::Insert(vector<Point*> points, int depth, deque<int> bounds)
 {
 	unsigned int currentDimension = depth % this->K;
@@ -62,6 +66,7 @@ Node* KdTree::Insert(vector<Point*> points, int depth, deque<int> bounds)
 	return node;
 }
 
+//Find a Node at the specified root in the Serial KD Tree
 Node* KdTree::Find(Node* root, Point* point, int depth)
 {
 	if (root == NULL)
@@ -89,6 +94,7 @@ Node* KdTree::Find(Node* root, Point* point, int depth)
 	}
 }
 
+//Find the Min Node rooted at the root in the Serial KD Tree
 Point* KdTree::FindMin(Node* root, int currentDimension, int cutDimension)
 {
 	if (root == NULL) {
@@ -112,6 +118,7 @@ Point* KdTree::FindMin(Node* root, int currentDimension, int cutDimension)
 	}
 }
 
+//Find the Max Node rooted at the root in the Serial KD Tree
 Point* KdTree::FindMax(Node* root, int currentDimension, int cutDimension)
 {
 	if (root == NULL) {
@@ -135,6 +142,7 @@ Point* KdTree::FindMax(Node* root, int currentDimension, int cutDimension)
 	}
 }
 
+//Collect the Points rooted at the root in the Serial KD Tree
 void KdTree::Points(Node* root, vector<Point*>* points)
 {
 	if (root == NULL)
@@ -147,11 +155,13 @@ void KdTree::Points(Node* root, vector<Point*>* points)
 		Points(root->boundingBox->right, points);
 }
 
+//Set the Outer Region or the window of the Serial KD Tree
 void KdTree::SetRegion(Range* region)
 {
 	this->region = region;
 }
 
+//Pretty Print Serial KD Tree's Contents in In-Order Traversal onto the Console
 void KdTree::Print(Node* root)
 {
 	if (root == NULL)

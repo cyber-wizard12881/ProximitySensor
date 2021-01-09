@@ -5,6 +5,7 @@
 #include <iostream>
 #include <iterator>
 
+//Create Default Range
 Range::Range()
 {
 	this->K = 0;
@@ -12,6 +13,7 @@ Range::Range()
 	this->to.clear();
 }
 
+//Create a Range Object with K Dimensions ... [1,2,3] -> [5,6,7] for instance....
 Range::Range(int K, vector<int> from, vector<int> to)
 {
 	this->K = K;
@@ -19,6 +21,7 @@ Range::Range(int K, vector<int> from, vector<int> to)
 	this->to = to;
 }
 
+//Destructor
 Range::~Range()
 {
 	this->K = 0;
@@ -28,6 +31,7 @@ Range::~Range()
 	this->to.shrink_to_fit();
 }
 
+//Pretty Print the Range onto the Console!!!
 void Range::Plot()
 {
 	std::ostringstream fromStr;

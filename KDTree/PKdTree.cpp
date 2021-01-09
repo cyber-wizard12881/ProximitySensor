@@ -2,6 +2,7 @@
 #include "PKdTree.h"
 #include "Sorter.h"
 
+//Parallel KD Tree Default Constructor
 PKdTree::PKdTree()
 {
 	this->K = 0;
@@ -12,6 +13,7 @@ PKdTree::PKdTree()
 	this->minNode = NULL;
 }
 
+//Create a Parallel KD Tree with Dimension K
 PKdTree::PKdTree(int K)
 {
 	this->K = K;
@@ -22,6 +24,7 @@ PKdTree::PKdTree(int K)
 	this->minNode = NULL;
 }
 
+//The Destructor
 PKdTree::~PKdTree()
 {
 	this->K = 0;
@@ -35,6 +38,7 @@ PKdTree::~PKdTree()
 	this->minNode = NULL;
 }
 
+//Insert a Node into the Parallel KD Tree ... Notice the Use of the Parallel Containers in the arguments
 Node* PKdTree::Insert(concurrent_vector<Point*> points, int depth, deque<int> bounds)
 {
 	unsigned int currentDimension = depth % this->K;
@@ -62,6 +66,7 @@ Node* PKdTree::Insert(concurrent_vector<Point*> points, int depth, deque<int> bo
 	return node;
 }
 
+//Node Exists at root in the Parallel KD Tree?
 Node* PKdTree::Find(Node* root, Point* point, int depth)
 {
 	if (root == NULL)
@@ -89,6 +94,7 @@ Node* PKdTree::Find(Node* root, Point* point, int depth)
 	}
 }
 
+//Min Node at the specified root in the Parallel KD Tree?
 Point* PKdTree::FindMin(Node* root, int currentDimension, int cutDimension)
 {
 	if (root == NULL) {
@@ -112,6 +118,7 @@ Point* PKdTree::FindMin(Node* root, int currentDimension, int cutDimension)
 	}
 }
 
+//Max Node at the specified root in the Parallel KD Tree?
 Point* PKdTree::FindMax(Node* root, int currentDimension, int cutDimension)
 {
 	if (root == NULL) {
@@ -135,6 +142,7 @@ Point* PKdTree::FindMax(Node* root, int currentDimension, int cutDimension)
 	}
 }
 
+//Collect Points at the specified root in the Parallel KD Tree!!
 void PKdTree::Points(Node* root, concurrent_vector<Point*>* points)
 {
 	if (root == NULL)
@@ -147,11 +155,13 @@ void PKdTree::Points(Node* root, concurrent_vector<Point*>* points)
 		Points(root->boundingBox->right, points);
 }
 
+//Set Outer Region or Window for the Parallel KD Tree
 void PKdTree::SetRegion(Range* region)
 {
 	this->region = region;
 }
 
+//Pretty Print the Parallel KD Tree's contents in In-Order Traversal to the console!!
 void PKdTree::Print(Node* root)
 {
 	if (root == NULL)

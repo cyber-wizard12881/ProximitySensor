@@ -6,6 +6,7 @@
 
 using namespace std;
 
+//Create the K-Dimensional Point!!!
 Point::Point(int K, ...)
 {
 	int point;
@@ -20,12 +21,14 @@ Point::Point(int K, ...)
 	va_end(val_point);
 }
 
+//A Copy Constructor
 Point::Point(const Point& point)
 {
 	this->dimensions = point.dimensions;
 	this->datum = point.datum;
 }
 
+//A Clone Constructor
 Point::Point(Point* point)
 {
 	this->cutDimension = point->cutDimension;
@@ -34,6 +37,7 @@ Point::Point(Point* point)
 	this->dimensions = point->dimensions;
 }
 
+//Default Constructor
 Point::Point()
 {
 	this->dimensions = 0;
@@ -41,6 +45,7 @@ Point::Point()
 	this->datum.clear();
 }
 
+//Pretty Print the Point's Contents onto the Console!!
 void Point::Plot()
 {
 	stringstream ss;
@@ -53,6 +58,7 @@ void Point::Plot()
 	cout << "(" << ss.str() << ")" << endl;
 }
 
+//Destructor
 Point::~Point()
 {
 	this->dimensions = 0;
@@ -60,6 +66,7 @@ Point::~Point()
 	this->datum.shrink_to_fit();
 }
 
+//Operator Overloading for Comparision Friendliness!!!
 bool operator==(const Point& lhs, const Point& rhs)
 {
 	if (lhs.dimensions != rhs.dimensions)
@@ -71,6 +78,7 @@ bool operator==(const Point& lhs, const Point& rhs)
 		return true;
 }
 
+//Operator Overloading for Sorting Friendliness!!!
 bool operator<=(const Point& lhs, const Point& rhs)
 {
 	if (lhs.datum[lhs.cutDimension] <= rhs.datum[rhs.cutDimension]) {

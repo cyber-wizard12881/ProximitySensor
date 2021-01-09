@@ -2,6 +2,7 @@
 #include "Node.h"
 #include <map>
 
+//Create a Node as a Point->Leaf or Bounding Box->Non-Leaf One?
 Node::Node(Point* point, BB* boundingBox)
 {
 	this->point = point;
@@ -10,6 +11,7 @@ Node::Node(Point* point, BB* boundingBox)
 	this->right = NULL;
 }
 
+//Destructor of the Node
 Node::~Node()
 {
 	delete& this->point;
@@ -22,6 +24,7 @@ Node::~Node()
 	this->boundingBox = NULL;
 }
 
+//Create a Bounding Box ... a Non-Leaf Node!
 BB::BB(int K, int cutDimension, int value, Node* left, Node* right)
 {
 	this->K = K;
@@ -31,6 +34,7 @@ BB::BB(int K, int cutDimension, int value, Node* left, Node* right)
 	this->right = right;
 }
 
+//Destructor of the Bounding Box
 BB::~BB()
 {
 	this->K = 0;
@@ -42,11 +46,14 @@ BB::~BB()
 	this->right = NULL;
 }
 
+//Set Outer Region or Window of the Bounding Box
 void BB::SetOuterRegion(Range* region)
 {
 	this->outerRegion = region;
 }
 
+//Get the Bounds bounded by the Bounding Box!!! 
+//The Most Important & Critical Part of the KNN Search & the KD Tree
 Range* Node::GetBounds()
 {
 	if (this->boundingBox == NULL && this->point != NULL) {

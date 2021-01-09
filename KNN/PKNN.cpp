@@ -5,6 +5,7 @@
 using namespace concurrency;
 using namespace std;
 
+//Parallel KNN Range Based Search Constructor
 PKNN::PKNN(int K, int NN, vector<Point*> points, Range* region, Range* range, int N)
 {
 	this->K = K;
@@ -17,6 +18,7 @@ PKNN::PKNN(int K, int NN, vector<Point*> points, Range* region, Range* range, in
 	this->PP = this->P / this->N;
 }
 
+//Parallel KNN Range Based Search Destructor
 PKNN::~PKNN()
 {
 	this->K = 0;
@@ -43,6 +45,7 @@ PKNN::~PKNN()
 	this->pNearestOnes.shrink_to_fit();
 }
 
+//Build a list of Data Partitioned Pseudo-Parallel KNN Range Based Search Objects
 void PKNN::BuildKNNs()
 {
 	parallel_for(size_t(0), size_t(N), [&](size_t idx) {
@@ -51,6 +54,7 @@ void PKNN::BuildKNNs()
 		});
 }
 
+//Build a list of Data Partitioned Parallel KNN Range Based Search Point Objects
 void PKNN::SetKNNPPoints(concurrent_vector<Point*> points)
 {
 	this->knnpPoints = points;
@@ -58,6 +62,7 @@ void PKNN::SetKNNPPoints(concurrent_vector<Point*> points)
 	this->PP = this->P / this->N;
 }
 
+//Build a list of Data Partitioned Parallel KNN Range Based Search Objects
 void PKNN::BuildKNNPs()
 {
 	parallel_for(size_t(0), size_t(N), [&](size_t idx) {
@@ -66,6 +71,7 @@ void PKNN::BuildKNNPs()
 		});
 }
 
+//Build a list of Data Partitioned Pseudo-Parallel KNN Range Based Search Trees (Backing Data Structure)
 void PKNN::BuildKdTrees()
 {
 	parallel_for(size_t(0), size_t(N), [&](size_t idx) {
@@ -74,6 +80,7 @@ void PKNN::BuildKdTrees()
 		});
 }
 
+//Build a list of Data Partitioned Parallel KNN Range Based Search Trees (Backing Data Structure)
 void PKNN::BuildPKdTrees()
 {
 	parallel_for(size_t(0), size_t(N), [&](size_t idx) {
@@ -82,6 +89,7 @@ void PKNN::BuildPKdTrees()
 		});
 }
 
+//Run a Pseudo-Parallel KNN Range Based Search
 void PKNN::Search(KNN* knn, Node* node, Range* range, concurrent_vector<Node*>* nodes)
 {
 	if (node != NULL && node->boundingBox == NULL && node->point != NULL)
@@ -112,6 +120,7 @@ void PKNN::Search(KNN* knn, Node* node, Range* range, concurrent_vector<Node*>* 
 	}
 }
 
+//Run a Pseudo-Parallel KNN Range Based Search
 void PKNN::PSearch()
 {
 	parallel_for(size_t(0), size_t(N), [&](size_t idx) {
@@ -122,6 +131,7 @@ void PKNN::PSearch()
 		});
 }
 
+//Run a Parallel KNN Range Based Search
 void PKNN::KNNPSearch()
 {
 	parallel_for(size_t(0), size_t(N), [&](size_t idx) {
@@ -132,6 +142,7 @@ void PKNN::KNNPSearch()
 		});
 }
 
+//Build a vector of Pseudo-Parallel KNN Range Based Search Point Result-Set
 void PKNN::Points(Node* root, concurrent_vector<Point*>* points)
 {
 	if (root == NULL)
@@ -144,6 +155,7 @@ void PKNN::Points(Node* root, concurrent_vector<Point*>* points)
 		Points(root->boundingBox->right, points);
 }
 
+//Build a vector of Parallel KNN Range Based Search Point Result-Set
 void PKNN::KNNPPoints(Node* root, concurrent_vector<Point*>* points)
 {
 	if (root == NULL)
@@ -156,12 +168,14 @@ void PKNN::KNNPPoints(Node* root, concurrent_vector<Point*>* points)
 		KNNPPoints(root->boundingBox->right, points);
 }
 
+//Remove Duplicates from the vector of Pseudo-Parallel KNN Range Based Search Point Result-Set
 void PKNN::RemoveDuplicatePoints()
 {
 	set<Point*> uniquePoints(this->pNearestOnes.begin(), this->pNearestOnes.end());
 	this->pNearestOnes.assign(uniquePoints.begin(), uniquePoints.end());
 }
 
+//Remove Duplicates from the vector of Parallel KNN Range Based Search Point Result-Set
 void PKNN::RemoveKNNPDuplicatePoints()
 {
 	set<Point*> uniquePoints(this->knnpNearestOnes.begin(), this->knnpNearestOnes.end());

@@ -10,18 +10,25 @@
 
 using namespace std;
 
+//The Serial KNN Range Search Algorithm Invoker
 void KNNOperations();
+//The Pseudo-Parallel KNN Range Search Algorithm Invoker
 void PKNNOperations();
+//The Parallel KNN Range Search Algorithm Invoker
 void PKNNPOperations();
 
 int main()
 {
+	//1. Call Serial KNN
 	KNNOperations();
+	//2. Call Pseduo-Parallel KNN
 	PKNNOperations();
+	//3. Call Parallel KNN
 	PKNNPOperations();
 	return getchar();
 }
 
+//3. Parallel KNN Range Based Search Invoker
 void PKNNPOperations()
 {
 	cout << "-------Starting the Parallel KNNP Range Search Program------------" << endl;
@@ -85,6 +92,7 @@ void PKNNPOperations()
 	cout << "-------Ending the Parallel KNNP Range Search Program------------" << endl;
 }
 
+//2. Pseudo-Parallel KNN Range Based Search Invoker
 void PKNNOperations()
 {
 	cout << "-------Starting the Parallel KNN Range Search Program------------" << endl;
@@ -142,6 +150,7 @@ void PKNNOperations()
 	cout << "-------Ending the Parallel KNN Range Search Program------------" << endl;
 }
 
+//1. Serial KNN Range Based Search Invoker
 void KNNOperations()
 {
 	cout << "-------Starting the KNN Range Search Program------------" << endl;

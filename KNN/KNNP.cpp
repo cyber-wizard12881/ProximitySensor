@@ -2,6 +2,7 @@
 #include "KNNP.h"
 #include "Utility.h"
 
+//Parallel KNN Range Based Search Algorithm Constructor
 KNNP::KNNP(int K, int NN, concurrent_vector<Point*> points)
 {
 	this->K = K;
@@ -10,6 +11,7 @@ KNNP::KNNP(int K, int NN, concurrent_vector<Point*> points)
 	this->KDTree = new PKdTree(this->K);
 }
 
+//Build a Parallel KD Tree
 Node* KNNP::BuildPKdTree()
 {
 	this->root = NULL;
@@ -19,6 +21,7 @@ Node* KNNP::BuildPKdTree()
 	return root;
 }
 
+//Run a Parallel KNN Range Based Search
 void KNNP::Search(Node* node, Range* range, concurrent_vector<Node*>* nodes)
 {
 	if (node != NULL && node->boundingBox == NULL && node->point != NULL)
@@ -49,6 +52,7 @@ void KNNP::Search(Node* node, Range* range, concurrent_vector<Node*>* nodes)
 	}
 }
 
+//Parallel KNN Range Based Search Algorithm Default Constructor
 KNNP::KNNP()
 {
 	this->K = 0;
@@ -58,6 +62,7 @@ KNNP::KNNP()
 	this->root = NULL;
 }
 
+//Parallel KNN Range Based Search Algorithm Destructor
 KNNP::~KNNP()
 {
 	this->K = 0;

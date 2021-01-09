@@ -2,6 +2,7 @@
 #include "KNN.h"
 #include "Utility.h"
 
+//Serial KNN Range Based Search Algorithm Constructor
 KNN::KNN(int K, int NN, vector<Point*> points)
 {
 	this->K = K;
@@ -10,6 +11,7 @@ KNN::KNN(int K, int NN, vector<Point*> points)
 	this->KDTree = new KdTree(this->K);
 }
 
+//Build a Serial KD Tree
 Node* KNN::BuildKdTree()
 {
 	this->root = NULL;
@@ -19,6 +21,7 @@ Node* KNN::BuildKdTree()
 	return root;
 }
 
+//Serial KNN Range Based Search
 void KNN::Search(Node* node, Range* range, vector<Node*>* nodes)
 {
 	if (node != NULL && node->boundingBox == NULL && node->point != NULL)
@@ -49,6 +52,7 @@ void KNN::Search(Node* node, Range* range, vector<Node*>* nodes)
 	}
 }
 
+//Serial KNN Range Based Search Algorithm Default Constructor
 KNN::KNN()
 {
 	this->K = 0;
@@ -58,6 +62,7 @@ KNN::KNN()
 	this->root = NULL;
 }
 
+//Serial KNN Range Based Search Algorithm Destructor
 KNN::~KNN()
 {
 	this->K = 0;
